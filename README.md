@@ -30,6 +30,7 @@ node server
 * Establecer color para el nombre de usuario
 * Visualizar los últimos 100 mensajes enviados
 * Los nuevos clientes reciben los ultimos 100 mensajes que haya en el servidor
+* Se reciben notificaciones por parte del servidor
 
 *Se puede probar con varias ventanas del navegador, sino que otra pc se conecta a la ip y puerto en el que se publicó*
 
