@@ -1,4 +1,4 @@
-$(function () {
+$(function() {
     "use strict";
     // for better performance - to avoid searching in DOM
     var content = $('#content');
@@ -13,29 +13,27 @@ $(function () {
     // if browser doesn't support WebSocket, just show
     // some notification and exit
     if (!window.WebSocket) {
-        content.html($('<p>',
-            { text: 'Sorry, but your browser doesn\'t support WebSocket.' }
-        ));
+        content.html($('<p>', { text: 'Sorry, but your browser doesn\'t support WebSocket.' }));
         input.hide();
         $('span').hide();
         return;
     }
     // open connection
     var connection = new WebSocket('ws://127.0.0.1:1337');
-    connection.onopen = function () {
+    connection.onopen = function() {
         // first we want users to enter their names
         input.removeAttr('disabled');
         status.text('Choose name:');
     };
-    connection.onerror = function (error) {
+    connection.onerror = function(error) {
         // just in there were some problems with connection...
         content.html($('<p>', {
-            text: 'Sorry, but there\'s some problem with your '
-                + 'connection or the server is down.'
+            text: 'Sorry, but there\'s some problem with your ' +
+                'connection or the server is down.'
         }));
     };
     // most important part - incoming messages
-    connection.onmessage = function (message) {
+    connection.onmessage = function(message) {
         // try to parse JSON message. Because we know that the server
         // always returns JSON this should work without any problem but
         // we should make sure that the massage is not chunked or
@@ -72,7 +70,7 @@ $(function () {
     /**
      * Send message when user presses Enter key
      */
-    input.keydown(function (e) {
+    input.keydown(function(e) {
         if (e.keyCode === 13) {
             var msg = $(this).val();
             if (!msg) {
@@ -95,7 +93,7 @@ $(function () {
      * respond to the in 3 seconds then show some error message 
      * to notify the user that something is wrong.
      */
-    setInterval(function () {
+    setInterval(function() {
         if (connection.readyState !== 1) {
             status.text('Error');
             input.attr('disabled', 'disabled').val(
@@ -106,11 +104,11 @@ $(function () {
      * Add message to the chat window
      */
     function addMessage(author, message, color, dt) {
-        content.append('<p><span style="color:' + color + '">'
-            + author + '</span> @ ' + (dt.getHours() < 10 ? '0'
-                + dt.getHours() : dt.getHours()) + ':'
-            + (dt.getMinutes() < 10
-                ? '0' + dt.getMinutes() : dt.getMinutes())
-            + ': ' + message + '</p>');
+        content.prepend('<p><span style="color:' + color + '">' +
+            author + '</span> @ ' + (dt.getHours() < 10 ? '0' +
+                dt.getHours() : dt.getHours()) + ':' +
+            (dt.getMinutes() < 10 ?
+                '0' + dt.getMinutes() : dt.getMinutes()) +
+            ': ' + message + '</p>');
     }
 });

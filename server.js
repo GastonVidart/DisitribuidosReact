@@ -1,87 +1,73 @@
 "use strict";
-// Optional. You will see this name in eg. 'ps' or 'top' command
 process.title = 'node-chat';
-// Port where we'll run the websocket server
-var webSocketsServerPort = 1337;
-// websocket and http servers
-var webSocketServer = require('websocket').server;
-var http = require('http');
+
+const webSocketsServerPort = 1337;
+const webSocketServer = require('websocket').server;
+const http = require('http');
+
 /**
- * Global variables
+ * Variables Globales
  */
-// latest 100 messages
+// historial de últimos 100 mensajes
 var history = [];
-// list of currently connected clients (users)
+// usuarios conectados al chat
 var clients = [];
-/**
- * Helper function for escaping input strings
- */
-function htmlEntities(str) {
-    return String(str)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-// Array with some colors
+// colores de usuarios posibles ordenados aleatoriamente
 var colors = ['red', 'green', 'blue', 'magenta', 'purple', 'plum', 'orange'];
-// ... in random order
-colors.sort(function (a, b) { return Math.random() > 0.5; });
+colors.sort(function(a, b) { return Math.random() > 0.5; });
+
 /**
- * HTTP server
+ * Servidor HTTP utilizado por el WebSocket
  */
-var server = http.createServer(function (request, response) {
-    // Not important for us. We're writing WebSocket server,
-    // not HTTP server
+var server = http.createServer(function(request, response) {});
+server.listen(webSocketsServerPort, function() {
+    console.log((new Date()) + "Server escuchando en el puerto: " +
+        webSocketsServerPort);
 });
-server.listen(webSocketsServerPort, function () {
-    console.log((new Date()) + " Server is listening on port "
-        + webSocketsServerPort);
-});
+
 /**
  * WebSocket server
  */
 var wsServer = new webSocketServer({
-    // WebSocket server is tied to a HTTP server. WebSocket
-    // request is just an enhanced HTTP request. For more info 
-    // http://tools.ietf.org/html/rfc6455#page-6
     httpServer: server
 });
-// This callback function is called every time someone
-// tries to connect to the WebSocket server
-wsServer.on('request', function (request) {
-    console.log((new Date()) + ' Connection from origin '
-        + request.origin + '.');
-    // accept connection - you should check 'request.origin' to
-    // make sure that client is connecting from your website
-    // (http://en.wikipedia.org/wiki/Same_origin_policy)
+
+/**
+ * Esta función es ejecutada en cada intento de 
+ * conexión por parte de un Cliente 
+ */
+wsServer.on('request', function(request) {
+    console.log((new Date()) + ' Conexión desde: ' +
+        request.origin + '.');
+
     var connection = request.accept(null, request.origin);
-    // we need to know client index to remove them on 'close' event
     var index = clients.push(connection) - 1;
     var userName = false;
     var userColor = false;
-    console.log((new Date()) + ' Connection accepted.');
-    // send back chat history
+    console.log((new Date()) + ' Conexión aceptada.');
     if (history.length > 0) {
         connection.sendUTF(
             JSON.stringify({ type: 'history', data: history }));
     }
-    // user sent some message
-    connection.on('message', function (message) {
-        if (message.type === 'utf8') { // accept only text
-            // first message sent by user is their name
+
+    // se recibe un mensaje del usuario
+    connection.on('message', function(message) {
+        if (message.type === 'utf8') {
+            // el primer mensaje recibido debe ser el nombre del usuario
             if (userName === false) {
-                // remember user name
                 userName = htmlEntities(message.utf8Data);
-                // get random color and send it back to the user
+                // obtener color aleatorio y enviarlo al usuario
                 userColor = colors.shift();
                 connection.sendUTF(
                     JSON.stringify({ type: 'color', data: userColor }));
-                console.log((new Date()) + ' User is known as: ' + userName
-                    + ' with ' + userColor + ' color.');
-            } else { // log and broadcast the message
-                console.log((new Date()) + ' Received Message from '
-                    + userName + ': ' + message.utf8Data);
+                console.log((new Date()) + ' El usuario: ' + userName +
+                    ' tiene color ' + userColor + '.');
 
-                // we want to keep history of all sent messages
+            } else {
+                console.log((new Date()) + ' Nuevo mensaje -> ' +
+                    userName + ': ' + message.utf8Data);
+
+                // guardo lel mensaje en el historial
                 var obj = {
                     time: (new Date()).getTime(),
                     text: htmlEntities(message.utf8Data),
@@ -90,7 +76,7 @@ wsServer.on('request', function (request) {
                 };
                 history.push(obj);
                 history = history.slice(-100);
-                // broadcast message to all connected clients
+                // hago broadcast del mensaje recibido a los clientes
                 var json = JSON.stringify({ type: 'message', data: obj });
                 for (var i = 0; i < clients.length; i++) {
                     clients[i].sendUTF(json);
@@ -98,15 +84,25 @@ wsServer.on('request', function (request) {
             }
         }
     });
-    // user disconnected
-    connection.on('close', function (connection) {
+
+    // se desconecta el usuario
+    connection.on('close', function(connection) {
         if (userName !== false && userColor !== false) {
-            console.log((new Date()) + " Peer "
-                + connection.remoteAddress + " disconnected.");
-            // remove user from the list of connected clients
+            console.log((new Date()) + " Peer " +
+                connection.remoteAddress + " disconnected.");
+            // quitar al cliente de la lista de usuarios conectados
             clients.splice(index, 1);
-            // push back user's color to be reused by another user
+            // devolver el color para que pueda ser usado por otro
             colors.push(userColor);
         }
     });
 });
+
+/**
+ * Función para evitar input strings
+ */
+function htmlEntities(str) {
+    return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
