@@ -1,0 +1,3 @@
+- Estetica pagina
+- Agregar publicidad y reloj
+- Agregar argv, argc
