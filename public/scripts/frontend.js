@@ -1,4 +1,4 @@
-$(function() {
+$(function () {
     "use strict";
     var content = $('#content');
     var input = $('#input');
@@ -22,12 +22,12 @@ $(function() {
 
     // abrir la conexión
     var connection = new WebSocket(`ws://${webSocketsServerIp}:${webSocketsServerPort}`);
-    connection.onopen = function() {
+    connection.onopen = function () {
         // primero se solicita el nombre
         input.removeAttr('disabled');
         status.text('Elegir Nombre:');
     };
-    connection.onerror = function(error) {
+    connection.onerror = function (error) {
         // si hay problemas de conexión
         content.html($('<p>', {
             text: 'Problemas en la conexión con el servidor'
@@ -37,7 +37,7 @@ $(function() {
     /**
      * Recepcion de mensajes
      */
-    connection.onmessage = function(message) {
+    connection.onmessage = function (message) {
         try {
             //se intenta parsear el mensaje
             var json = JSON.parse(message.data);
@@ -70,7 +70,7 @@ $(function() {
     /**
      * Enviar un mensaje cuando se presiona la tecla Enter
      */
-    input.keydown(function(e) {
+    input.keydown(function (e) {
         if (e.keyCode === 13) {
             var msg = $(this).val();
             if (!msg) {
@@ -93,11 +93,18 @@ $(function() {
      * Agregar un mensaje a la ventana de chat
      */
     function addMessage(author, message, color, dt) {
-        content.prepend('<p><span style="color:' + color + '">' +
-            author + '</span> @ ' + (dt.getHours() < 10 ? '0' +
-                dt.getHours() : dt.getHours()) + ':' +
-            (dt.getMinutes() < 10 ?
-                '0' + dt.getMinutes() : dt.getMinutes()) +
-            ': ' + message + '</p>');
+        if (author === 'SERVER') {
+            content.prepend('<p style="text-align:center"></span style="color:' + color + '">' +
+                (dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours()) + ':' +
+                (dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes()) +
+                ': ' + message + '</p>');
+        } else {
+            content.prepend('<p><span style="color:' + color + '">' +
+                author + '</span> @ ' + (dt.getHours() < 10 ? '0' +
+                    dt.getHours() : dt.getHours()) + ':' +
+                (dt.getMinutes() < 10 ?
+                    '0' + dt.getMinutes() : dt.getMinutes()) +
+                ': ' + message + '</p>');
+        }
     }
 });
