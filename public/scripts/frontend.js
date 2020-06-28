@@ -93,12 +93,19 @@ $(function() {
      * Agregar un mensaje a la ventana de chat
      */
     function addMessage(author, message, color, dt) {
-        content.append('<p><span style="color:' + color + '">' +
-            author + '</span> @ ' + (dt.getHours() < 10 ? '0' +
-                dt.getHours() : dt.getHours()) + ':' +
-            (dt.getMinutes() < 10 ?
-                '0' + dt.getMinutes() : dt.getMinutes()) +
-            ': ' + message + '</p>');
+        if (author === 'SERVER') {
+            content.append('<p style="text-align:center"></span style="color:' + color + '">' +
+                (dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours()) + ':' +
+                (dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes()) +
+                ': ' + message + '</p>');
+        } else {
+            content.append('<p><span style="color:' + color + '">' +
+                author + '</span> @ ' + (dt.getHours() < 10 ? '0' +
+                    dt.getHours() : dt.getHours()) + ':' +
+                (dt.getMinutes() < 10 ?
+                    '0' + dt.getMinutes() : dt.getMinutes()) +
+                ': ' + message + '</p>');
+        }
 
         // scrollear el chat
         var element = document.getElementById("content");
