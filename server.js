@@ -63,24 +63,12 @@ wsServer.on('request', function(request) {
                 console.log((new Date()) + ' El usuario: ' + userName +
                     ' tiene color ' + userColor + '.');
 
+                broadcastMessage('SERVER', 'black', 'Bienvenido: ' + userName);
             } else {
                 console.log((new Date()) + ' Nuevo mensaje -> ' +
                     userName + ': ' + message.utf8Data);
 
-                // guardo lel mensaje en el historial
-                var obj = {
-                    time: (new Date()).getTime(),
-                    text: htmlEntities(message.utf8Data),
-                    author: userName,
-                    color: userColor
-                };
-                history.push(obj);
-                history = history.slice(-100);
-                // hago broadcast del mensaje recibido a los clientes
-                var json = JSON.stringify({ type: 'message', data: obj });
-                for (var i = 0; i < clients.length; i++) {
-                    clients[i].sendUTF(json);
-                }
+                broadcastMessage(userName, userColor, message.utf8Data);
             }
         }
     });
@@ -97,6 +85,24 @@ wsServer.on('request', function(request) {
         }
     });
 });
+
+function broadcastMessage(userName, userColor, message) {
+    // guardo el mensaje en el historial
+    var obj = {
+        time: (new Date()).getTime(),
+        text: htmlEntities(message),
+        author: userName,
+        color: userColor
+    };
+    history.push(obj);
+    history = history.slice(-100);
+    // hago broadcast del mensaje recibido a los clientes
+    var json = JSON.stringify({ type: 'message', data: obj });
+    for (var i = 0; i < clients.length; i++) {
+        clients[i].sendUTF(json);
+    }
+}
+
 
 /**
  * Función para evitar input strings

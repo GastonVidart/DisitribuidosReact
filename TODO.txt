@@ -1,7 +1,6 @@
 - Estetica pagina
 - Cambiar prepend por append con scrolleo
-- No usar Ajax
+- Ajax README
 - Agregar publicidad y reloj
-- Terminar README
 - Agregar argv, argc
 - Agregar mensaje de bienvenida
