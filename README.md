@@ -5,7 +5,13 @@ El presente repositorio, pertenece al trabajo realizado por alumnos de la Factul
 ## Requisitos
 * Instalar Node
 
-*Se utilizó Express, WebSocket y Yargs en la implementación, pero sus dependencias se encuentran la configuración. Por lo tanto se instalan automáticamente*
+Como se utilizó Express, WebSocket y Yargs en la implementación y sus dependencias se encuentran la configuración, estos deben estar instalados. Para poder instalarlos se deben ejecutar los siguientes comandos:
+
+>npm i express
+
+>npm i websocket
+
+>npm i yargs
 
 ## Ejecución
 1. Abrir la terminal.
