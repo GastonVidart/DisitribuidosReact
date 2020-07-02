@@ -5,23 +5,23 @@ El presente repositorio, pertenece al trabajo realizado por alumnos de la Factul
 ## Requisitos
 * Instalar Node
 
-*Se utilizó Express y WebSocket en la implementación, pero sus dependencias se encuentran la configuración. Por lo tanto se instalan automáticamente*
+*Se utilizó Express, WebSocket y Yargs en la implementación, pero sus dependencias se encuentran la configuración. Por lo tanto se instalan automáticamente*
 
 ## Ejecución
-1. Abrir la terminal
+1. Abrir la terminal.
 
-2. Ir a la carpeta a donde se haya clonado el repositorio o descargado el contenido del mismo
+2. Ir a la carpeta a donde se haya clonado el repositorio o descargado el contenido del mismo.
 
-3. Ejecutar al script server.js con el siguiente comando
+3. Ejecutar al script server.js con el siguiente comando.
 ```
 node server
 ```
 >Por defecto se publica en localhost:1337
 
-4. Ejecutar al script client.js con el siguiente comando
+4. Ejecutar al script client.js con el siguiente comando, se permite utilizar un puerto personalizado.
 
 ```
-node client
+node client [--port="numPort"]
 ```
 >Por defecto se publica en localhost:8000
 
