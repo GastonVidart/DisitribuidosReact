@@ -49,7 +49,7 @@ $(function() {
         if (json.type === 'color') {
             // primer respuesta es el color
             myColor = json.data;
-            status.text(myName + ': ').css('color', myColor);
+            status.text(myName);
             input.removeAttr('disabled').focus();
         } else if (json.type === 'history') {
             // ingresar todos los mensajes del historial en la ventana
@@ -93,22 +93,29 @@ $(function() {
      * Agregar un mensaje a la ventana de chat
      */
     function addMessage(author, message, color, dt) {
-        if (author === 'SERVER') {
-            content.append('<p style="text-align:center"></span style="color:' + color + '">' +
+        if (author === myName) {
+            content.append('<div class="d-flex justify-content-end mb-4">' +
+                '<div class="msg_cotainer_send">' + message +
+                '<span class="msg_time_send">' + getStringTime(dt) + ', ' + author + '</span></div></div>');
+
+        } else if (author === 'SERVER') {
+            content.append('<p class="msg_cotainer_server"></span style="color:' + color + '">' +
                 (dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours()) + ':' +
                 (dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes()) +
                 ': ' + message + '</p>');
         } else {
-            content.append('<p><span style="color:' + color + '">' +
-                author + '</span> @ ' + (dt.getHours() < 10 ? '0' +
-                    dt.getHours() : dt.getHours()) + ':' +
-                (dt.getMinutes() < 10 ?
-                    '0' + dt.getMinutes() : dt.getMinutes()) +
-                ': ' + message + '</p>');
+            content.append('<div class="d-flex justify-content-start mb-4">' +
+                '<div class="msg_cotainer">' + message +
+                '<span class="msg_time">' + getStringTime(dt) + ', ' + author + '</span></div></div>');
         }
-
         // scrollear el chat
         var element = document.getElementById("content");
         element.scrollTop = element.scrollHeight;
     }
+
+    function getStringTime(dt) {
+        return ((dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours()) + ':' +
+            (dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes()))
+    }
+
 });
