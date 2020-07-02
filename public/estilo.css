@@ -180,6 +180,7 @@ html {
     background-color: #82ccdd;
     padding: 10px;
     position: relative;
+    max-width: 95%;
 }
 
 .msg_cotainer_send {
@@ -190,6 +191,7 @@ html {
     background-color: #78e08f;
     padding: 10px;
     position: relative;
+    max-width: 95%;
 }
 
 .msg_cotainer_server {
