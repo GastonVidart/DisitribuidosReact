@@ -5,33 +5,39 @@ El presente repositorio, pertenece al trabajo realizado por alumnos de la Factul
 ## Requisitos
 * Instalar Node
 
-*Se utilizó Express y WebSocket en la implementación, pero sus dependencias se encuentran la configuración. Por lo tanto se instalan automáticamente*
+Como se utilizó Express, WebSocket y Yargs en la implementación y sus dependencias se encuentran la configuración, estos deben estar instalados. Para poder instalarlos se deben ejecutar los siguientes comandos:
+
+>npm i express
+
+>npm i websocket
+
+>npm i yargs
 
 ## Ejecución
-1. Abrir la terminal
+1. Abrir la terminal.
 
-2. Ir a la carpeta a donde se haya clonado el repositorio o descargado el contenido del mismo
+2. Ir a la carpeta a donde se haya clonado el repositorio o descargado el contenido del mismo.
 
-3. Ejecutar al script server.js con el siguiente comando
+3. Ejecutar al script server.js con el siguiente comando.
 ```
 node server
 ```
 >Por defecto se publica en localhost:1337
 
-4. Ejecutar al script client.js con el siguiente comando
+4. Ejecutar al script client.js con el siguiente comando, se permite utilizar un puerto personalizado.
 
 ```
-node client
+node client [--port="numPort"]
 ```
 >Por defecto se publica en localhost:8000
 
 ## Funcionalidades
 * Chat entre diferentes usuarios.
 * Definir nombre de usuario
-* Establecer color para el nombre de usuario
 * Visualizar los últimos 100 mensajes enviados
 * Los nuevos clientes reciben los ultimos 100 mensajes que haya en el servidor
 * Se reciben notificaciones por parte del servidor
+* Fecha y hora incorporados
 
 *Se puede probar con varias ventanas del navegador, sino que otra pc se conecte a la ip y puerto en el que se publicó la aplicación.*
 

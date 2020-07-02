@@ -49,7 +49,7 @@ $(function() {
         if (json.type === 'color') {
             // primer respuesta es el color
             myColor = json.data;
-            status.text(myName + ': ').css('color', myColor);
+            status.text(myName);
             input.removeAttr('disabled').focus();
         } else if (json.type === 'history') {
             // ingresar todos los mensajes del historial en la ventana
@@ -93,22 +93,74 @@ $(function() {
      * Agregar un mensaje a la ventana de chat
      */
     function addMessage(author, message, color, dt) {
-        if (author === 'SERVER') {
-            content.append('<p style="text-align:center"></span style="color:' + color + '">' +
+        if (author === myName) {
+            content.append('<div class="d-flex justify-content-end mb-4">' +
+                '<div class="msg_cotainer_send">' + message +
+                '<span class="msg_time_send">' + getStringTime(dt) + ', ' + author + '</span></div></div>');
+
+        } else if (author === 'SERVER') {
+            content.append('<p class="msg_cotainer_server"></span style="color:' + color + '">' +
                 (dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours()) + ':' +
                 (dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes()) +
                 ': ' + message + '</p>');
         } else {
-            content.append('<p><span style="color:' + color + '">' +
-                author + '</span> @ ' + (dt.getHours() < 10 ? '0' +
-                    dt.getHours() : dt.getHours()) + ':' +
-                (dt.getMinutes() < 10 ?
-                    '0' + dt.getMinutes() : dt.getMinutes()) +
-                ': ' + message + '</p>');
+            content.append('<div class="d-flex justify-content-start mb-4">' +
+                '<div class="msg_cotainer">' + message +
+                '<span class="msg_time">' + getStringTime(dt) + ', ' + author + '</span></div></div>');
         }
-
         // scrollear el chat
         var element = document.getElementById("content");
         element.scrollTop = element.scrollHeight;
     }
+
+    function getStringTime(dt) {
+        return ((dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours()) + ':' +
+            (dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes()))
+    }
+
+    var actualizarHora = function() {
+        var fecha = new Date(),
+            hora = fecha.getHours(),
+            minutos = fecha.getMinutes(),
+            segundos = fecha.getSeconds(),
+            diaSemana = fecha.getDay(),
+            dia = fecha.getDate(),
+            mes = fecha.getMonth(),
+            anio = fecha.getFullYear(),
+            ampm;
+
+        var $pHoras = $("#horas"),
+            $pSegundos = $("#segundos"),
+            $pMinutos = $("#minutos"),
+            $pAMPM = $("#ampm"),
+            $pDiaSemana = $("#diaSemana"),
+            $pDia = $("#dia"),
+            $pMes = $("#mes"),
+            $pAnio = $("#anio");
+        var semana = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+        var meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+        $pDiaSemana.text(semana[diaSemana]);
+        $pDia.text(dia);
+        $pMes.text(meses[mes]);
+        $pAnio.text(anio);
+        if (hora >= 12) {
+            hora = hora - 12;
+            ampm = "PM";
+        } else {
+            ampm = "AM";
+        }
+        if (hora == 0) {
+            hora = 12;
+        }
+        if (hora < 10) { $pHoras.text("0" + hora) } else { $pHoras.text(hora) };
+        if (minutos < 10) { $pMinutos.text("0" + minutos) } else { $pMinutos.text(minutos) };
+        if (segundos < 10) { $pSegundos.text("0" + segundos) } else { $pSegundos.text(segundos) };
+        $pAMPM.text(ampm);
+
+    };
+
+    actualizarHora();
+    var intervalo = setInterval(actualizarHora, 1000);
+
 });
