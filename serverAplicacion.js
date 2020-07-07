@@ -4,6 +4,7 @@ process.title = 'node-chat';
 const webSocketsServerPort = 1337;
 const webSocketServer = require('websocket').server;
 const http = require('http');
+const cron = require("node-cron");
 
 /**
  * Variables Globales
@@ -50,6 +51,10 @@ wsServer.on('request', function(request) {
             JSON.stringify({ type: 'history', data: history }));
     }
 
+    new cron.schedule('* * * * * *', () => {
+        connection.sendUTF(JSON.stringify(actualizarHora()));
+    });
+
     // se recibe un mensaje del usuario
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
@@ -72,6 +77,8 @@ wsServer.on('request', function(request) {
             }
         }
     });
+
+
 
     // se desconecta el usuario
     connection.on('close', function(connection) {
@@ -111,4 +118,49 @@ function htmlEntities(str) {
     return String(str)
         .replace(/&/g, '&amp;').replace(/</g, '&lt;')
         .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/**
+ * Obtiene la fecha y hora y las devuleve en un JSON
+ */
+function actualizarHora() {
+    var fecha = new Date(),
+        horaAux = fecha.getHours(),
+        minutosAux = fecha.getMinutes(),
+        segundosAux = fecha.getSeconds(),
+        diaSemana = fecha.getDay(),
+        dia = fecha.getDate(),
+        mes = fecha.getMonth(),
+        anio = fecha.getFullYear(),
+        ampm;
+
+    if (horaAux >= 12) {
+        horaAux = horaAux - 12;
+        ampm = "PM";
+    } else {
+        ampm = "AM";
+    }
+    if (horaAux == 0) {
+        horaAux = 12;
+    }
+
+    var hora, minutos, segundos;
+
+    if (horaAux < 10) { hora = "0" + horaAux } else { hora = "" + horaAux };
+    if (minutosAux < 10) { minutos = "0" + minutosAux } else { minutos = "" + minutosAux };
+    if (segundosAux < 10) { segundos = "0" + segundosAux } else { segundos = "" + segundosAux };
+
+    return {
+        type: "fecha",
+        data: {
+            hora,
+            minutos,
+            segundos,
+            diaSemana,
+            dia,
+            mes,
+            anio,
+            ampm
+        }
+    }
 }

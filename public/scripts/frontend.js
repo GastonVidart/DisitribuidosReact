@@ -62,6 +62,27 @@ $(function() {
             input.removeAttr('disabled');
             addMessage(json.data.author, json.data.text,
                 json.data.color, new Date(json.data.time));
+        } else if (json.type === 'fecha') {
+            //recibe la fecha y hora
+            var $pHoras = $("#horas"),
+                $pSegundos = $("#segundos"),
+                $pMinutos = $("#minutos"),
+                $pAMPM = $("#ampm"),
+                $pDiaSemana = $("#diaSemana"),
+                $pDia = $("#dia"),
+                $pMes = $("#mes"),
+                $pAnio = $("#anio");
+            var semana = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+            var meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+            $pHoras.text(json.data.hora);
+            $pSegundos.text(json.data.segundos);
+            $pMinutos.text(json.data.minutos);
+            $pDiaSemana.text(semana[json.data.diaSemana]);
+            $pDia.text(json.data.dia);
+            $pMes.text(meses[json.data.mes]);
+            $pAnio.text(json.data.anio);
+            $pAMPM.text(json.data.ampm);
         } else {
             console.log('Formato de JSON no reconocido:', json);
         }
@@ -117,50 +138,4 @@ $(function() {
         return ((dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours()) + ':' +
             (dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes()))
     }
-
-    var actualizarHora = function() {
-        var fecha = new Date(),
-            hora = fecha.getHours(),
-            minutos = fecha.getMinutes(),
-            segundos = fecha.getSeconds(),
-            diaSemana = fecha.getDay(),
-            dia = fecha.getDate(),
-            mes = fecha.getMonth(),
-            anio = fecha.getFullYear(),
-            ampm;
-
-        var $pHoras = $("#horas"),
-            $pSegundos = $("#segundos"),
-            $pMinutos = $("#minutos"),
-            $pAMPM = $("#ampm"),
-            $pDiaSemana = $("#diaSemana"),
-            $pDia = $("#dia"),
-            $pMes = $("#mes"),
-            $pAnio = $("#anio");
-        var semana = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
-        var meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-
-        $pDiaSemana.text(semana[diaSemana]);
-        $pDia.text(dia);
-        $pMes.text(meses[mes]);
-        $pAnio.text(anio);
-        if (hora >= 12) {
-            hora = hora - 12;
-            ampm = "PM";
-        } else {
-            ampm = "AM";
-        }
-        if (hora == 0) {
-            hora = 12;
-        }
-        if (hora < 10) { $pHoras.text("0" + hora) } else { $pHoras.text(hora) };
-        if (minutos < 10) { $pMinutos.text("0" + minutos) } else { $pMinutos.text(minutos) };
-        if (segundos < 10) { $pSegundos.text("0" + segundos) } else { $pSegundos.text(segundos) };
-        $pAMPM.text(ampm);
-
-    };
-
-    actualizarHora();
-    var intervalo = setInterval(actualizarHora, 1000);
-
 });
